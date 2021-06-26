@@ -1,12 +1,17 @@
+require('dotenv').config()
 const express = require('express');
 const {extend} = require('lodash');
 const {Wishlist} = require('../models/wishlist.model.js')
+const {authenticateToken} = require('../utils/authenticateToken.js')
 
 const router = express.Router();
 
+router.use('/users', authenticateToken)
 
-router.param('userId', async(req, res, next, userId)=>{
+
+router.use('/users', async(req, res, next)=>{
   try{
+    let {userId} = req
     let wishlist = await Wishlist.findOne({__userId:userId})
     // let wishlist = await Wishlist.findOne({__userId:userId}).populate({
     //   path:'products',
@@ -29,7 +34,7 @@ router.param('userId', async(req, res, next, userId)=>{
 
 
 
-router.route('/:userId')
+router.route('/users')
 .get((req, res)=>{
   let {wishlist} = req;
   res.status(200).json({success:true, data:wishlist});
