@@ -12,12 +12,6 @@ router.use('/users', async(req, res, next)=>{
   try{
     let {userId} = req
     let cart = await Cart.findOne({__userId:userId})
-    // let cart = await Cart.findOne({__userId:userId}).populate({
-    //   path:'products',
-    //   populate:{
-    //     path:'__product'
-    //   }
-    // })
 
     if(!cart){
       cart = new Cart({__userId: userId, products:[]});
@@ -30,8 +24,6 @@ router.use('/users', async(req, res, next)=>{
     res.status(400).json({success:false, message:`Failed to access Cart`})
   }
 })
-
-
 
 
 router.route('/users')
@@ -90,6 +82,18 @@ router.route('/users')
       res.status(200).json({messag:'work in progress', data: cart})
   }catch(err){
     res.status(500).json({success:false, message:'Failed to remove product'})
+  }
+})
+
+router.route('/users/order/confirm')
+.post(async(req, res)=>{
+try{  
+    let {cart} = req
+    cart.products = []
+    cart = await cart.save()
+    res.status(200).json({success:true, data:cart})
+  }catch(err){
+    res.status(500).json({success:false, message:'something went wrong', errorMessage: err.message})
   }
 })
 
