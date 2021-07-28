@@ -1,6 +1,7 @@
 const express = require('express')
 const {extend} = require('lodash')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const {User} = require('../models/user.model.js')
 
 const router = express.Router()
@@ -22,7 +23,11 @@ router.route('/')
 
     const newUser = new User({email:newUserObj.email, password:hashedPassword})
     const savedData = await newUser.save()
-    res.status(201).json({success:true, data: savedData})
+
+    const userId = savedData._id
+    const accessToken = jwt.sign({userId}, process.env.ACCESS_TOKEN, {expiresIn:'24h'})
+
+     res.status(201).json({success:true, newUser: savedData, accessToken})
   }catch(err){
     res.status(500).json({success:false, errorMessage:err.message})
   }
