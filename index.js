@@ -17,6 +17,7 @@ const user_router = require('./router/user.router.js')
 const cart_router = require('./router/cart.router.js')
 const wishlist_router = require('./router/wishlist.router.js')
 const address_router = require('./router/address.router.js')
+const payment_router = require('./router/payment.router.js')
 
 
 const {DBConnection} = require('./db/db.connection.js')
@@ -30,6 +31,7 @@ app.use('/user',user_router);
 app.use('/cart', cart_router);
 app.use('/wishlist', wishlist_router);
 app.use('/address', address_router);
+app.use('/payment', payment_router);
 
 
 app.get('/', (req, res) => {
